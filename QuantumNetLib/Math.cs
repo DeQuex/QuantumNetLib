@@ -12,44 +12,36 @@
 
         public static float Sqrt(float a)
         {
-            float x = a;
+            var x = a;
             float y = 1;
-            float e = 0.000001f;
+            var e = 0.000001f;
             while (x - y > e)
             {
                 x = (x + y) / 2;
                 y = a / x;
             }
+
             return x;
         }
 
         public static float Pow(float a, float b)
         {
             float result = 1;
-            for (int i = 0; i < b; i++)
-            {
-                result *= a;
-            }
+            for (var i = 0; i < b; i++) result *= a;
             return result;
         }
 
         public static float Sin(float a)
         {
             float result = 0;
-            for (int i = 0; i < 10; i++)
-            {
-                result += Pow(-1, i) * Pow(a, 2 * i + 1) / Factorial(2 * i + 1);
-            }
+            for (var i = 0; i < 10; i++) result += Pow(-1, i) * Pow(a, 2 * i + 1) / Factorial(2 * i + 1);
             return result;
         }
 
         public static float Cos(float a)
         {
             float result = 0;
-            for (int i = 0; i < 10; i++)
-            {
-                result += Pow(-1, i) * Pow(a, 2 * i) / Factorial(2 * i);
-            }
+            for (var i = 0; i < 10; i++) result += Pow(-1, i) * Pow(a, 2 * i) / Factorial(2 * i);
             return result;
         }
 
@@ -61,20 +53,14 @@
         public static float Factorial(float a)
         {
             float result = 1;
-            for (int i = 1; i <= a; i++)
-            {
-                result *= i;
-            }
+            for (var i = 1; i <= a; i++) result *= i;
             return result;
         }
 
         public static float Log(float a)
         {
             float result = 0;
-            for (int i = 1; i < 100; i++)
-            {
-                result += Pow(-1, i + 1) * Pow(a - 1, i) / i;
-            }
+            for (var i = 1; i < 100; i++) result += Pow(-1, i + 1) * Pow(a - 1, i) / i;
             return result;
         }
 
