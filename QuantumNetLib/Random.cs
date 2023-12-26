@@ -1,4 +1,5 @@
-﻿
+﻿using static QuantumNetLib.LINQ;
+
 namespace QuantumNetLib
 {
     public class Random
@@ -13,8 +14,15 @@ namespace QuantumNetLib
             _seed = seed;
         }
 
-        public Random() : this(System.DateTime.UtcNow.Ticks)
+        public Random() : this(GenerateSeed())
         {
+        }
+
+        private static long GenerateSeed()
+        {
+            // Create random seed based on current time
+            var seed = System.DateTime.Now.Ticks;
+            return seed;
         }
 
         public int Next()
@@ -95,8 +103,7 @@ namespace QuantumNetLib
 
         public T Choose<T>(T[] array, float[] probabilities)
         {
-            float sum = 0;
-            for (var i = 0; i < probabilities.Length; i++) sum += probabilities[i];
+            var sum = Sum(probabilities);
 
             var random = NextFloat(0, sum);
             sum = 0;
@@ -127,8 +134,7 @@ namespace QuantumNetLib
 
         public T Choose<T>(T[] array, double[] probabilities)
         {
-            double sum = 0;
-            for (var i = 0; i < probabilities.Length; i++) sum += probabilities[i];
+            var sum = Sum(probabilities);
 
             var random = NextDouble(0, sum);
             sum = 0;
@@ -159,8 +165,7 @@ namespace QuantumNetLib
 
         public T Choose<T>(T[] array, int[] weights)
         {
-            var sum = 0;
-            for (var i = 0; i < weights.Length; i++) sum += weights[i];
+            var sum = Sum(weights);
 
             var random = Next(0, sum);
             sum = 0;
@@ -188,6 +193,20 @@ namespace QuantumNetLib
 
             return list[list.Size - 1];
         }
+        public T GetRandom<T>(T[] array, float[] probabilities)
+        {
+            var sum = Sum(probabilities);
+
+            var random = NextFloat(0, sum);
+            sum = 0;
+            for (var i = 0; i < probabilities.Length; i++)
+            {
+                sum += probabilities[i];
+                if (random < sum) return array[i];
+            }
+
+            return array[array.Length - 1];
+        }
 
         public float GetRandom(float min, float max)
         {
@@ -199,17 +218,14 @@ namespace QuantumNetLib
             return NextDouble() * (max - min) + min;
         }
 
+        // Method to get a random integer within a range
         public int GetRandom(int min, int max)
         {
-            // Ensure the difference is positive
-            var diff = max - min;
-            if (diff <= 0) new Exception("max must be greater than min", 20);
+            if (max <= min)
+                new Exception("Maximum value must be greater than minimum value", 20);
 
-            // Use NextDouble to avoid overflow issues and ensure a positive range
-            var range = (double)max - min;
-            var sample = NextDouble();
-            var scaled = sample * range + min;
-            return (int)scaled;
+            var range = (long)max - min;
+            return (int)((Next() % range) + min);
         }
 
         public bool GetRandomBool()
@@ -237,20 +253,11 @@ namespace QuantumNetLib
             return list[Next(0, list.Size - 1)];
         }
 
-        public T GetRandom<T>(T[] array, float[] probabilities)
+        public string GetRandomString(int length)
         {
-            float sum = 0;
-            for (var i = 0; i < probabilities.Length; i++) sum += probabilities[i];
-
-            var random = NextFloat(0, sum);
-            sum = 0;
-            for (var i = 0; i < probabilities.Length; i++)
-            {
-                sum += probabilities[i];
-                if (random < sum) return array[i];
-            }
-
-            return array[array.Length - 1];
+            var result = "";
+            for (var i = 0; i < length; i++) result += (char)Next(32, 126);
+            return result;
         }
     }
 }

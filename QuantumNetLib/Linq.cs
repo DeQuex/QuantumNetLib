@@ -1,31 +1,33 @@
-﻿namespace QuantumNetLib
+﻿using System.Runtime.InteropServices.ComTypes;
+
+namespace QuantumNetLib
 {
-    public delegate TResult Func<T, TResult>(T item);
+    public delegate TResult Func<in T, out TResult>(T item);
 
-    public delegate TResult Func<T1, T2, TResult>(T1 item1, T2 item2);
+    public delegate TResult Func<in T1, in T2, out TResult>(T1 item1, T2 item2);
 
-    public class Linq
+    public class LINQ
     {
         public static T[] Where<T>(T[] array, Func<T, bool> predicate)
         {
             var result = new Vector<T>();
             foreach (var item in array)
                 if (predicate(item))
-                    result.push_back(item);
+                    result.PushBack(item);
             return result.ToArray();
         }
 
         public static T[] Select<T>(T[] array, Func<T, T> selector)
         {
             var result = new Vector<T>();
-            foreach (var item in array) result.push_back(selector(item));
+            foreach (var item in array) result.PushBack(selector(item));
             return result.ToArray();
         }
 
         public static T[] Select<T>(T[] array, Func<T, int, T> selector)
         {
             var result = new Vector<T>();
-            for (var i = 0; i < array.Length; i++) result.push_back(selector(array[i], i));
+            for (var i = 0; i < array.Length; i++) result.PushBack(selector(array[i], i));
             return result.ToArray();
         }
 
@@ -34,7 +36,7 @@
             var result = new Vector<T>();
             foreach (var item in array)
             foreach (var subItem in selector(item))
-                result.push_back(subItem);
+                result.PushBack(subItem);
             return result.ToArray();
         }
 
@@ -43,7 +45,7 @@
             var result = new Vector<T>();
             for (var i = 0; i < array.Length; i++)
                 foreach (var subItem in selector(array[i], i))
-                    result.push_back(subItem);
+                    result.PushBack(subItem);
             return result.ToArray();
         }
 
@@ -52,7 +54,7 @@
             var result = new Vector<T>();
             foreach (var item in array)
             foreach (var subItem in selector(item))
-                result.push_back(resultSelector(item, subItem));
+                result.PushBack(resultSelector(item, subItem));
             return result.ToArray();
         }
 
@@ -61,7 +63,7 @@
             var result = new Vector<T>();
             for (var i = 0; i < array.Length; i++)
                 foreach (var subItem in selector(array[i], i))
-                    result.push_back(resultSelector(array[i], subItem));
+                    result.PushBack(resultSelector(array[i], subItem));
             return result.ToArray();
         }
 
@@ -88,8 +90,7 @@
 
         public static T FirstOrDefault<T>(T[] array)
         {
-            if (array.Length > 0) return array[0];
-            return default;
+            return array.Length > 0 ? array[0] : default;
         }
 
         public static T Last<T>(T[] array, Func<T, bool> predicate)
@@ -115,8 +116,7 @@
 
         public static T LastOrDefault<T>(T[] array)
         {
-            if (array.Length > 0) return array[array.Length - 1];
-            return default;
+            return array.Length > 0 ? array[array.Length - 1] : default;
         }
 
         public static T Single<T>(T[] array, Func<T, bool> predicate)
@@ -160,8 +160,7 @@
         {
             if (array.Length > 1) new Exception("Sequence contains more than one element", 1);
 
-            if (array.Length > 0) return array[0];
-            return default;
+            return array.Length > 0 ? array[0] : default;
         }
 
         public static T ElementAt<T>(T[] array, int index)
@@ -179,85 +178,93 @@
         public static T[] Concat<T>(T[] array1, T[] array2)
         {
             var result = new Vector<T>();
-            foreach (var item in array1) result.push_back(item);
+            foreach (var item in array1) result.PushBack(item);
 
-            foreach (var item in array2) result.push_back(item);
+            foreach (var item in array2) result.PushBack(item);
             return result.ToArray();
         }
 
         public static T[] Concat<T>(T[] array1, T[] array2, T[] array3)
         {
             var result = new Vector<T>();
-            foreach (var item in array1) result.push_back(item);
+            foreach (var item in array1) result.PushBack(item);
 
-            foreach (var item in array2) result.push_back(item);
+            foreach (var item in array2) result.PushBack(item);
 
-            foreach (var item in array3) result.push_back(item);
+            foreach (var item in array3) result.PushBack(item);
             return result.ToArray();
         }
 
         public static T[] Concat<T>(T[] array1, T[] array2, T[] array3, T[] array4)
         {
             var result = new Vector<T>();
-            foreach (var item in array1) result.push_back(item);
+            foreach (var item in array1) result.PushBack(item);
 
-            foreach (var item in array2) result.push_back(item);
+            foreach (var item in array2) result.PushBack(item);
 
-            foreach (var item in array3) result.push_back(item);
+            foreach (var item in array3) result.PushBack(item);
 
-            foreach (var item in array4) result.push_back(item);
+            foreach (var item in array4) result.PushBack(item);
             return result.ToArray();
         }
 
         public static T[] Concat<T>(T[] array1, T[] array2, T[] array3, T[] array4, T[] array5)
         {
             var result = new Vector<T>();
-            foreach (var item in array1) result.push_back(item);
+            foreach (var item in array1) result.PushBack(item);
 
-            foreach (var item in array2) result.push_back(item);
+            foreach (var item in array2) result.PushBack(item);
 
-            foreach (var item in array3) result.push_back(item);
+            foreach (var item in array3) result.PushBack(item);
 
-            foreach (var item in array4) result.push_back(item);
+            foreach (var item in array4) result.PushBack(item);
 
-            foreach (var item in array5) result.push_back(item);
+            foreach (var item in array5) result.PushBack(item);
             return result.ToArray();
         }
 
         public static T[] Concat<T>(T[] array1, T[] array2, T[] array3, T[] array4, T[] array5, T[] array6)
         {
             var result = new Vector<T>();
-            foreach (var item in array1) result.push_back(item);
+            foreach (var item in array1) result.PushBack(item);
 
-            foreach (var item in array2) result.push_back(item);
+            foreach (var item in array2) result.PushBack(item);
 
-            foreach (var item in array3) result.push_back(item);
+            foreach (var item in array3) result.PushBack(item);
 
-            foreach (var item in array4) result.push_back(item);
+            foreach (var item in array4) result.PushBack(item);
 
-            foreach (var item in array5) result.push_back(item);
+            foreach (var item in array5) result.PushBack(item);
 
-            foreach (var item in array6) result.push_back(item);
+            foreach (var item in array6) result.PushBack(item);
             return result.ToArray();
         }
 
         public static T[] Concat<T>(T[] array1, T[] array2, T[] array3, T[] array4, T[] array5, T[] array6, T[] array7)
         {
             var result = new Vector<T>();
-            foreach (var item in array1) result.push_back(item);
+            foreach (var item in array1) result.PushBack(item);
 
-            foreach (var item in array2) result.push_back(item);
+            foreach (var item in array2) result.PushBack(item);
 
-            foreach (var item in array3) result.push_back(item);
+            foreach (var item in array3) result.PushBack(item);
 
-            foreach (var item in array4) result.push_back(item);
+            foreach (var item in array4) result.PushBack(item);
 
-            foreach (var item in array5) result.push_back(item);
+            foreach (var item in array5) result.PushBack(item);
 
-            foreach (var item in array6) result.push_back(item);
+            foreach (var item in array6) result.PushBack(item);
 
-            foreach (var item in array7) result.push_back(item);
+            foreach (var item in array7) result.PushBack(item);
             return result.ToArray();
+        }
+
+        // Sum
+        public static T Sum<T>(T[] array)
+        {
+            var result = default(T);
+            foreach (var item in array) result += (dynamic) item;
+            return result;
         }
     }
 }

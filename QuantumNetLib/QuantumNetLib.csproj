@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exception.cs" />
-    <Compile Include="Linq.cs" />
+    <Compile Include="LINQ.cs" />
     <Compile Include="Math.cs" />
     <Compile Include="Random.cs" />
     <Compile Include="Vec2.cs" />

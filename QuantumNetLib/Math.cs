@@ -14,7 +14,7 @@
         {
             var x = a;
             float y = 1;
-            var e = 0.000001f;
+            const float e = 0.000001f;
             while (x - y > e)
             {
                 x = (x + y) / 2;
