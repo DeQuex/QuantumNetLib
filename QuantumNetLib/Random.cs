@@ -20,13 +20,8 @@ namespace QuantumNetLib
 
         private static long GenerateSeed()
         {
-            // Create a random seed based on a combination of factors
-            long seed = 0;
-            unchecked
-            {
-                seed = (long)(System.DateTime.Now.Ticks & 0xFFFFFFFF);
-                seed = (seed * 397) ^ 0x7FFFFFFF;
-            }
+            // Create random seed based on current time
+            var seed = System.DateTime.Now.Ticks;
             return seed;
         }
 
@@ -39,9 +34,6 @@ namespace QuantumNetLib
 
         public int Next(int min, int max)
         {
-            if (max <= min)
-                throw new ArgumentException("Maximum value must be greater than minimum value.", nameof(max));
-
             return Next() % (max - min + 1) + min;
         }
 
@@ -83,23 +75,19 @@ namespace QuantumNetLib
 
         public void Shuffle<T>(T[] array)
         {
-            for (int i = array.Length - 1; i > 0; i--)
+            for (var i = 0; i < array.Length; i++)
             {
-                int j = Next(0, i);
-                T temp = array[i];
-                array[i] = array[j];
-                array[j] = temp;
+                var j = Next(0, array.Length - 1);
+                (array[i], array[j]) = (array[j], array[i]);
             }
         }
 
         public void Shuffle<T>(Vector<T> list)
         {
-            for (int i = list.Size - 1; i > 0; i--)
+            for (var i = 0; i < list.Size; i++)
             {
-                int j = Next(0, i);
-                T temp = list[i];
-                list[i] = list[j];
-                list[j] = temp;
+                var j = Next(0, list.Size - 1);
+                (list[i], list[j]) = (list[j], list[i]);
             }
         }
 
@@ -115,15 +103,14 @@ namespace QuantumNetLib
 
         public T Choose<T>(T[] array, float[] probabilities)
         {
-            float sum = Sum(probabilities);
-            float randomValue = NextFloat(0, sum);
+            var sum = Sum(probabilities);
 
-            float cumulativeSum = 0;
-            for (int i = 0; i < probabilities.Length; i++)
+            var random = NextFloat(0, sum);
+            sum = 0;
+            for (var i = 0; i < probabilities.Length; i++)
             {
-                cumulativeSum += probabilities[i];
-                if (randomValue < cumulativeSum)
-                    return array[i];
+                sum += probabilities[i];
+                if (random < sum) return array[i];
             }
 
             return array[array.Length - 1];
@@ -131,15 +118,15 @@ namespace QuantumNetLib
 
         public T Choose<T>(Vector<T> list, Vector<float> probabilities)
         {
-            float sum = Sum(probabilities);
-            float randomValue = NextFloat(0, sum);
+            float sum = 0;
+            for (var i = 0; i < probabilities.Size; i++) sum += probabilities[i];
 
-            float cumulativeSum = 0;
-            for (int i = 0; i < probabilities.Size; i++)
+            var random = NextFloat(0, sum);
+            sum = 0;
+            for (var i = 0; i < probabilities.Size; i++)
             {
-                cumulativeSum += probabilities[i];
-                if (randomValue < cumulativeSum)
-                    return list[i];
+                sum += probabilities[i];
+                if (random < sum) return list[i];
             }
 
             return list[list.Size - 1];
@@ -147,15 +134,14 @@ namespace QuantumNetLib
 
         public T Choose<T>(T[] array, double[] probabilities)
         {
-            double sum = Sum(probabilities);
-            double randomValue = NextDouble(0, sum);
+            var sum = Sum(probabilities);
 
-            double cumulativeSum = 0;
-            for (int i = 0; i < probabilities.Length; i++)
+            var random = NextDouble(0, sum);
+            sum = 0;
+            for (var i = 0; i < probabilities.Length; i++)
             {
-                cumulativeSum += probabilities[i];
-                if (randomValue < cumulativeSum)
-                    return array[i];
+                sum += probabilities[i];
+                if (random < sum) return array[i];
             }
 
             return array[array.Length - 1];
@@ -163,15 +149,15 @@ namespace QuantumNetLib
 
         public T Choose<T>(Vector<T> list, Vector<double> probabilities)
         {
-            double sum = Sum(probabilities);
-            double randomValue = NextDouble(0, sum);
+            double sum = 0;
+            for (var i = 0; i < probabilities.Size; i++) sum += probabilities[i];
 
-            double cumulativeSum = 0;
-            for (int i = 0; i < probabilities.Size; i++)
+            var random = NextDouble(0, sum);
+            sum = 0;
+            for (var i = 0; i < probabilities.Size; i++)
             {
-                cumulativeSum += probabilities[i];
-                if (randomValue < cumulativeSum)
-                    return list[i];
+                sum += probabilities[i];
+                if (random < sum) return list[i];
             }
 
             return list[list.Size - 1];
@@ -179,15 +165,14 @@ namespace QuantumNetLib
 
         public T Choose<T>(T[] array, int[] weights)
         {
-            int sum = Sum(weights);
-            int randomValue = Next(0, sum);
+            var sum = Sum(weights);
 
-            int cumulativeSum = 0;
-            for (int i = 0; i < weights.Length; i++)
+            var random = Next(0, sum);
+            sum = 0;
+            for (var i = 0; i < weights.Length; i++)
             {
-                cumulativeSum += weights[i];
-                if (randomValue < cumulativeSum)
-                    return array[i];
+                sum += weights[i];
+                if (random < sum) return array[i];
             }
 
             return array[array.Length - 1];
@@ -195,29 +180,84 @@ namespace QuantumNetLib
 
         public T Choose<T>(Vector<T> list, Vector<int> weights)
         {
-            int sum = Sum(weights);
-            int randomValue = Next(0, sum);
+            var sum = 0;
+            for (var i = 0; i < weights.Size; i++) sum += weights[i];
 
-            int cumulativeSum = 0;
-            for (int i = 0; i < weights.Size; i++)
+            var random = Next(0, sum);
+            sum = 0;
+            for (var i = 0; i < weights.Size; i++)
             {
-                cumulativeSum += weights[i];
-                if (randomValue < cumulativeSum)
-                    return list[i];
+                sum += weights[i];
+                if (random < sum) return list[i];
             }
 
             return list[list.Size - 1];
         }
+        public T GetRandom<T>(T[] array, float[] probabilities)
+        {
+            var sum = Sum(probabilities);
+
+            var random = NextFloat(0, sum);
+            sum = 0;
+            for (var i = 0; i < probabilities.Length; i++)
+            {
+                sum += probabilities[i];
+                if (random < sum) return array[i];
+            }
+
+            return array[array.Length - 1];
+        }
+
+        public float GetRandom(float min, float max)
+        {
+            return NextFloat() * (max - min) + min;
+        }
+
+        public double GetRandom(double min, double max)
+        {
+            return NextDouble() * (max - min) + min;
+        }
+
+        // Method to get a random integer within a range
+        public int GetRandom(int min, int max)
+        {
+            if (max <= min)
+                new Exception("Maximum value must be greater than minimum value", 20);
+
+            var range = (long)max - min;
+            return (int)((Next() % range) + min);
+        }
+
+        public bool GetRandomBool()
+        {
+            return Next() % 2 == 0;
+        }
+
+        public bool GetRandomBool(float probability)
+        {
+            return NextFloat() < probability;
+        }
+
+        public bool GetRandomBool(double probability)
+        {
+            return NextDouble() < probability;
+        }
+
+        public T GetRandom<T>(T[] array)
+        {
+            return array[Next(0, array.Length - 1)];
+        }
+
+        public T GetRandom<T>(Vector<T> list)
+        {
+            return list[Next(0, list.Size - 1)];
+        }
 
         public string GetRandomString(int length)
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var result = new char[length];
-            for (int i = 0; i < length; i++)
-            {
-                result[i] = chars[Next(0, chars.Length - 1)];
-            }
-            return new string(result);
+            var result = "";
+            for (var i = 0; i < length; i++) result += (char)Next(32, 126);
+            return result;
         }
     }
 }
