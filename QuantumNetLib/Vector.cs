@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace QuantumNetLib
+﻿namespace QuantumNetLib
 {
     public class Vector<T>
     {
@@ -13,7 +11,7 @@ namespace QuantumNetLib
             Size = 0;
         }
 
-        public T[] Data { get; private set; }
+        public T[] Data { get; set; }
         public int Size { get; private set; }
 
         // Indexer
@@ -21,14 +19,12 @@ namespace QuantumNetLib
         {
             get
             {
-                if (index < 0 || index >= Size)
-                    throw new IndexOutOfRangeException();
+                if (index < 0 || index >= Data.Length) new Exception("Index out of range", 1);
                 return Data[index];
             }
             set
             {
-                if (index < 0 || index >= Size)
-                    throw new IndexOutOfRangeException();
+                if (index < 0 || index >= Data.Length) new Exception("Index out of range", 1);
                 Data[index] = value;
             }
         }
@@ -38,15 +34,14 @@ namespace QuantumNetLib
         {
             var newCapacity = Data.Length == 0 ? 4 : Data.Length * 2;
             var temp = new T[newCapacity];
-            Array.Copy(Data, temp, Size);
+            Data.CopyTo(temp, 0);
             Data = temp;
         }
 
         // Add element at the end
         public void PushBack(T item)
         {
-            if (Size == Data.Length)
-                Resize();
+            if (Size == Data.Length) Resize();
             Data[Size] = item;
             Size++;
         }
@@ -54,33 +49,28 @@ namespace QuantumNetLib
         // Remove element at the end
         public void PopBack()
         {
-            if (Size == 0)
-                throw new InvalidOperationException("Vector is empty");
+            if (Size == 0) new Exception("Vector is empty", 2);
             Size--;
         }
 
         // Get element at index
         public void Erase(int index)
         {
-            if (index < 0 || index >= Size)
-                throw new IndexOutOfRangeException();
+            if (index < 0 || index >= Size) new Exception("Index out of range", 1);
 
-            for (var i = index; i < Size - 1; i++)
-                Data[i] = Data[i + 1];
+            for (var i = index; i < Size - 1; i++) Data[i] = Data[i + 1];
             Size--;
         }
+
 
         // Insert element at index
         public void Insert(int index, T item)
         {
-            if (index < 0 || index > Size)
-                throw new IndexOutOfRangeException();
+            if (index < 0 || index >= Size) new Exception("Index out of range", 1);
 
-            if (Size == Data.Length)
-                Resize();
+            if (Size == Data.Length) Resize();
 
-            for (var i = Size; i > index; i--)
-                Data[i] = Data[i - 1];
+            for (var i = Size; i > index; i--) Data[i] = Data[i - 1];
             Data[index] = item;
             Size++;
         }
@@ -104,12 +94,9 @@ namespace QuantumNetLib
 
         public Vector<T> Clone() // Deep copy
         {
-            var newVector = new Vector<T>
-            {
-                Data = new T[Data.Length],
-                Size = Size
-            };
-            Array.Copy(Data, newVector.Data, Size);
+            var newVector = new Vector<T>();
+            newVector.Data = new T[Data.Length];
+            Data.CopyTo(newVector.Data, 0);
             // If you have other fields, copy them here as well
             return newVector;
         }
@@ -117,19 +104,23 @@ namespace QuantumNetLib
         // Get string
         public override string ToString()
         {
-            return string.Join(" ", Data, 0, Size);
+            var result = "";
+            for (var i = 0; i < Size; i++) result += Data[i] + " ";
+            return result;
         }
 
         // Get string with new line
         public string ToStringLine()
         {
-            return string.Join(Environment.NewLine, Data, 0, Size);
+            var result = "";
+            for (var i = 0; i < Size; i++) result += Data[i] + "\n";
+            return result;
         }
 
         public T[] ToArray()
         {
             var result = new T[Size];
-            Array.Copy(Data, result, Size);
+            for (var i = 0; i < Size; i++) result[i] = Data[i];
             return result;
         }
     }
