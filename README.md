@@ -16,7 +16,7 @@ QuantumNetLib is a custom C# library that provides a set of foundational utiliti
 To use QuantumNetLib in your project, clone this repository and include the .cs files in your project or compile it into a DLL.
 
 ```bash
-git clone https://github.com/[your-username]/QuantumNetLib.git
+git clone https://github.com/DeQuex/QuantumNetLib.git
 
 ```
 ## Prerequisites
